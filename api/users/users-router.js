@@ -27,11 +27,16 @@ router.get('/:id', validateUserId, (req, res) => {
   res.status(200).json(req.user)
 });
 
-router.post('/', validateUser, (req, res) => {
-  // RETURN THE NEWLY CREATED USER OBJECT
-  // this needs a middleware to check that the request body is valid
+//[POST] api/users
+router.post('/', validateUser, (req, res, next) => {
+  Users.insert(req.body)
+    .then(user => {
+      res.status(201).json(user)
+    })
+    .catch(next)
 });
 
+//[PUT] api/users/:id
 router.put('/:id', validateUserId, validateUser, (req, res) => {
   // RETURN THE FRESHLY UPDATED USER OBJECT
   // this needs a middleware to verify user id
@@ -39,6 +44,7 @@ router.put('/:id', validateUserId, validateUser, (req, res) => {
 
 });
 
+//[DELETE] api/users/:id
 router.delete('/:id', validateUserId, (req, res) => {
   // RETURN THE FRESHLY DELETED USER OBJECT
   // this needs a middleware to verify user id
