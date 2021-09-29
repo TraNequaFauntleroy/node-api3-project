@@ -60,21 +60,39 @@ router.delete('/:id', validateUserId, async (req, res, next) => {
 });
 
 //[GET] api/users/:id/posts
-router.get('/:id/posts', validateUserId, validatePost, (req, res, next) => {
-  Users.getUserPosts(req.params.id)
-    .then(posts => {
-      res.status(200).json(posts)
-    })
-    .catch(next)
+router.get(
+  '/:id/posts', 
+  validateUserId, 
+  validatePost, 
+  async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const result = await Users.getUserPosts(id)
+    res.json(result)
+  } catch (err) {
+    next(err)
+  }
 });
 
-// router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
-//   Posts.
-  
+//[POST] api/users/:id/posts
+router.post(
+  '/:id/posts', 
+  validateUserId, 
+  validatePost, 
+  async (req, res, next) => {
+  try {
+    const newPost = await Posts.insert({
+      user_id: req.params.id,
+      text: req.text
+    })
+    res.status(201).json(newPost)
 
-// });
+  } catch (err) {
+    next(err)
+  }
+});
 
-router.use((err, req, res, next) => {
+router.use((err, req, res, next) => { //eslint-disable-line
   res.status(err.status || 500).json({
     message: "Something went wrong"
   })
