@@ -9,7 +9,6 @@ function logger(req, res, next) {
 }
 
 async function validateUserId(req, res, next) {
-  // DO YOUR MAGIC
   try {
     const {id} = req.params
     const user = await User.getById(id)
@@ -38,11 +37,9 @@ function validateUser(req, res, next) {
     req.name = name.trim()
     next()
   }
- 
 }
 
 function validatePost(req, res, next) {
-  // DO YOUR MAGIC
   const { text } = req.body
   if (!text || !text.trim()) {
     res.status(400).json({
@@ -52,9 +49,7 @@ function validatePost(req, res, next) {
     req.text = text.trim()
     next()
   }
-
 }
-// do not forget to expose these functions to other modules
 module.exports = {
   logger,
   validateUserId,

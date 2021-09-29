@@ -5,34 +5,37 @@ const {
   validateUser,
   validatePost
 } = require('../middleware/middleware')
+const Users = require('./users-model')
+const Posts = require('../posts/posts-model')
 
 // You will need `users-model.js` and `posts-model.js` both
 // The middleware functions also need to be required
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  // RETURN AN ARRAY WITH ALL THE USERS
+//[GET] api/users
+router.get('/', (req, res, next) => {
+  Users.get()
+    .then(user => {
+      res.status(200).json(user)
+    })
+    .catch(next)
 });
 
+//[GET] api/users/:id
 router.get('/:id', validateUserId, (req, res) => {
-  // RETURN THE USER OBJECT
-  // this needs a middleware to verify user id
-  console.log(req.user)
-
+  res.status(200).json(req.user)
 });
 
 router.post('/', validateUser, (req, res) => {
   // RETURN THE NEWLY CREATED USER OBJECT
   // this needs a middleware to check that the request body is valid
-  console.log(req.name)
 });
 
 router.put('/:id', validateUserId, validateUser, (req, res) => {
   // RETURN THE FRESHLY UPDATED USER OBJECT
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
-  console.log(req.name)
 
 });
 
@@ -50,10 +53,14 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   // RETURN THE NEWLY CREATED USER POST
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
-  console.log(req.user)
-  console.log(req.text)
 
 });
+
+router.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    message: "Something went wrong"
+  })
+})
 
 // do not forget to export the router
 module.exports = router
