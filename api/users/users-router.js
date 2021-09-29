@@ -30,18 +30,20 @@ router.get('/:id', validateUserId, (req, res) => {
 //[POST] api/users
 router.post('/', validateUser, (req, res, next) => {
   Users.insert(req.body)
-    .then(user => {
-      res.status(201).json(user)
+    .then(newUser => {
+      res.status(201).json(newUser)
     })
     .catch(next)
 });
 
 //[PUT] api/users/:id
-router.put('/:id', validateUserId, validateUser, (req, res) => {
-  // RETURN THE FRESHLY UPDATED USER OBJECT
-  // this needs a middleware to verify user id
-  // and another middleware to check that the request body is valid
-
+router.put('/:id', validateUserId, validateUser, (req, res, next) => {
+  const { id } = req.params
+  Users.update(id, req.body)
+    .then(updated => {
+      res.status(200).json(updated)
+    })
+    .catch(next)
 });
 
 //[DELETE] api/users/:id
